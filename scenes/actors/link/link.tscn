@@ -1,0 +1,205 @@
+[gd_scene format=3 uid="uid://dlit2butf3f6d"]
+
+[ext_resource type="Script" uid="uid://l5mlvjadol27" path="res://scenes/actors/link/scripts/link.gd" id="1_osodq"]
+[ext_resource type="Script" uid="uid://hdsvetx5yvcq" path="res://scenes/actors/components/player_controller.gd" id="2_7vf6x"]
+[ext_resource type="PackedScene" uid="uid://c4y3rer16ie5d" path="res://scenes/actors/components/movement_component.tscn" id="3_q76ee"]
+[ext_resource type="PackedScene" uid="uid://bpor4ytyhw25k" path="res://scenes/actors/components/input_component.tscn" id="4_tcjc2"]
+[ext_resource type="Script" uid="uid://dddryua22gmrq" path="res://resources/scripts/state_machine.gd" id="5_i4jck"]
+[ext_resource type="PackedScene" uid="uid://c8npfpjmsos3m" path="res://scenes/actors/components/model_rotation_component.tscn" id="5_lg2no"]
+[ext_resource type="PackedScene" uid="uid://ba7a8dsl6s3no" path="res://scenes/actors/components/gravity_component.tscn" id="5_toie4"]
+[ext_resource type="Script" uid="uid://sbdap1vyfu0" path="res://scenes/actors/link/scripts/player_grounded_state.gd" id="6_51xpe"]
+[ext_resource type="PackedScene" uid="uid://c063wyx8musl4" path="res://scenes/actors/components/ray_cast_component.tscn" id="6_lccqm"]
+[ext_resource type="Script" uid="uid://cryuvuaalhggk" path="res://scenes/actors/link/scripts/player_rolled_state.gd" id="7_51xpe"]
+[ext_resource type="Script" uid="uid://lkf02ippdxbi" path="res://scenes/actors/link/scripts/player_jumped_state.gd" id="8_48cgp"]
+[ext_resource type="Script" uid="uid://c2vut0gw8en21" path="res://scenes/actors/link/scripts/player_falling_state.gd" id="16_qv0e1"]
+[ext_resource type="Script" uid="uid://bupkak8tfbcop" path="res://scenes/actors/link/scripts/player_landed_state.gd" id="17_gd1na"]
+[ext_resource type="Script" uid="uid://fuyqdljd11ph" path="res://scenes/actors/link/scripts/animation_tree_manager.gd" id="24_06d6r"]
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_osodq"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_pl0f2"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_pl0f2"]
+nodes/idle/node = SubResource("AnimationNodeAnimation_pl0f2")
+nodes/idle/position = Vector2(100, 140)
+node_connections = [&"output", 0, &"idle"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3d5pr"]
+advance_mode = 2
+advance_condition = &"is_idle"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_nuusx"]
+states/idle/node = SubResource("AnimationNodeBlendTree_pl0f2")
+states/idle/position = Vector2(444, 100)
+transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_3d5pr")]
+graph_offset = Vector2(-35, 2)
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_hhkio"]
+
+[sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_7am4u"]
+input_0/name = "grounded"
+input_0/auto_advance = false
+input_0/break_loop_at_end = false
+input_0/reset = true
+input_1/name = "combat"
+input_1/auto_advance = false
+input_1/break_loop_at_end = false
+input_1/reset = true
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_8xo7f"]
+graph_offset = Vector2(-549.87616, 137.13332)
+nodes/output/position = Vector2(340, 160)
+nodes/transition/node = SubResource("AnimationNodeTransition_7am4u")
+nodes/transition/position = Vector2(-20, 160)
+nodes/main_scale/node = SubResource("AnimationNodeTimeScale_hhkio")
+nodes/main_scale/position = Vector2(160, 120)
+nodes/grounded/node = SubResource("AnimationNodeStateMachine_nuusx")
+nodes/grounded/position = Vector2(-320, 160)
+nodes/combat/node = SubResource("AnimationNodeStateMachine_osodq")
+nodes/combat/position = Vector2(-320, 400)
+node_connections = [&"output", 0, &"main_scale", &"transition", 0, &"grounded", &"transition", 1, &"combat", &"main_scale", 0, &"transition"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_8xo7f"]
+radius = 0.25878906
+height = 1.4008789
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3d5pr"]
+albedo_color = Color(4.042983e-06, 0.66528165, 0.28744176, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8xo7f"]
+material = SubResource("StandardMaterial3D_3d5pr")
+size = Vector3(0.39, 0.045, 0.1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_51xpe"]
+radius = 0.24707031
+height = 1.4132557
+
+[node name="Link" type="CharacterBody3D" unique_id=982857109]
+physics_interpolation_mode = 1
+collision_layer = 16
+collision_mask = 65
+script = ExtResource("1_osodq")
+
+[node name="Components" type="Node3D" parent="." unique_id=491573635]
+physics_interpolation_mode = 2
+
+[node name="InputComponent" parent="Components" unique_id=888144372 instance=ExtResource("4_tcjc2")]
+
+[node name="MovementComponent" parent="Components" unique_id=1871890839 instance=ExtResource("3_q76ee")]
+
+[node name="GravityComponent" parent="Components" unique_id=2121318383 instance=ExtResource("5_toie4")]
+
+[node name="ModelRotationComponent" parent="Components" unique_id=1814241100 node_paths=PackedStringArray("mesh") instance=ExtResource("5_lg2no")]
+mesh = NodePath("../../LinkMesh")
+
+[node name="RayCastComponent" parent="Components" unique_id=581148325 node_paths=PackedStringArray("raycast") instance=ExtResource("6_lccqm")]
+raycast = NodePath("FloorRayCast")
+
+[node name="FloorRayCast" type="RayCast3D" parent="Components/RayCastComponent" unique_id=485705714]
+visible = false
+target_position = Vector3(0, -0.7, 0)
+
+[node name="PlayerController" type="Node3D" parent="." unique_id=640743273]
+script = ExtResource("2_7vf6x")
+
+[node name="AnimationTreeManager" type="Node3D" parent="." unique_id=31548998 node_paths=PackedStringArray("animation_tree")]
+script = ExtResource("24_06d6r")
+animation_tree = NodePath("AnimationTree")
+
+[node name="AnimationTree" type="AnimationTree" parent="AnimationTreeManager" unique_id=1185434244]
+tree_root = SubResource("AnimationNodeBlendTree_8xo7f")
+parameters/transition/current_state = "grounded"
+parameters/transition/transition_request = ""
+parameters/transition/current_index = 0
+parameters/main_scale/scale = 1.0
+parameters/grounded/conditions/is_idle = false
+
+[node name="StateMachine" type="Node3D" parent="." unique_id=1517476968 node_paths=PackedStringArray("starting_state")]
+physics_interpolation_mode = 2
+script = ExtResource("5_i4jck")
+starting_state = NodePath("PlayerGroundedState")
+
+[node name="PlayerGroundedState" type="Node3D" parent="StateMachine" unique_id=1547158757]
+script = ExtResource("6_51xpe")
+
+[node name="Label3D" type="Label3D" parent="StateMachine/PlayerGroundedState" unique_id=2043256214]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5091033, 0)
+visible = false
+billboard = 1
+text = "Grounded"
+
+[node name="PlayerRolledState" type="Node3D" parent="StateMachine" unique_id=1518397012]
+script = ExtResource("7_51xpe")
+
+[node name="RollSpeedIncreaseTimer" type="Timer" parent="StateMachine/PlayerRolledState" unique_id=868766348]
+wait_time = 0.278
+one_shot = true
+
+[node name="RollFinishedTimer" type="Timer" parent="StateMachine/PlayerRolledState" unique_id=1555263383]
+wait_time = 0.444
+one_shot = true
+
+[node name="RollBonkTimer" type="Timer" parent="StateMachine/PlayerRolledState" unique_id=496327946]
+wait_time = 0.2
+one_shot = true
+
+[node name="Label3D" type="Label3D" parent="StateMachine/PlayerRolledState" unique_id=229747587]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5091033, 0)
+visible = false
+billboard = 1
+text = "Rolling"
+
+[node name="PlayerJumpedState" type="Node3D" parent="StateMachine" unique_id=1816574300]
+script = ExtResource("8_48cgp")
+
+[node name="FallTimer" type="Timer" parent="StateMachine/PlayerJumpedState" unique_id=299739209]
+wait_time = 0.55
+one_shot = true
+
+[node name="Label3D" type="Label3D" parent="StateMachine/PlayerJumpedState" unique_id=1059152022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5091033, 0)
+visible = false
+billboard = 1
+text = "Jumped"
+
+[node name="PlayerFallingState" type="Node3D" parent="StateMachine" unique_id=1508076368]
+script = ExtResource("16_qv0e1")
+
+[node name="Label3D" type="Label3D" parent="StateMachine/PlayerFallingState" unique_id=1206080738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5091033, 0)
+visible = false
+billboard = 1
+text = "Falling"
+
+[node name="PlayerLandedState" type="Node3D" parent="StateMachine" unique_id=191100212]
+script = ExtResource("17_gd1na")
+
+[node name="RecoverTimer" type="Timer" parent="StateMachine/PlayerLandedState" unique_id=196582233]
+wait_time = 0.5
+one_shot = true
+
+[node name="Label3D" type="Label3D" parent="StateMachine/PlayerLandedState" unique_id=1283226038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5091033, 0)
+visible = false
+billboard = 1
+text = "Landed"
+
+[node name="LinkMesh" type="Node3D" parent="." unique_id=1455390459]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LinkMesh" unique_id=1093022126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.70043945, 0)
+mesh = SubResource("CapsuleMesh_8xo7f")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LinkMesh/MeshInstance3D" unique_id=610411950]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41731966, 0.25486314)
+mesh = SubResource("BoxMesh_8xo7f")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1755754022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.706706, 0)
+shape = SubResource("CapsuleShape3D_51xpe")
+
+[connection signal="timeout" from="StateMachine/PlayerRolledState/RollSpeedIncreaseTimer" to="StateMachine/PlayerRolledState" method="_on_roll_speed_increase_timer_timeout"]
+[connection signal="timeout" from="StateMachine/PlayerRolledState/RollFinishedTimer" to="StateMachine/PlayerRolledState" method="_on_roll_finished_timer_timeout"]
+[connection signal="timeout" from="StateMachine/PlayerRolledState/RollBonkTimer" to="StateMachine/PlayerRolledState" method="_on_roll_bonk_timer_timeout"]
+[connection signal="timeout" from="StateMachine/PlayerJumpedState/FallTimer" to="StateMachine/PlayerJumpedState" method="_on_fall_timer_timeout"]
+[connection signal="timeout" from="StateMachine/PlayerLandedState/RecoverTimer" to="StateMachine/PlayerLandedState" method="_on_recover_timer_timeout"]

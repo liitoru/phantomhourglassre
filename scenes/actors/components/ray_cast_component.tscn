@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c063wyx8musl4"]
+
+[ext_resource type="Script" uid="uid://dr3ilvyxv3qrf" path="res://scenes/topdown/actors/components/ray_cast_component.gd" id="1_jupsj"]
+
+[node name="RayCastComponent" type="Node3D" unique_id=556473247]
+script = ExtResource("1_jupsj")
