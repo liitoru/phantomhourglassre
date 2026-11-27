@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c8npfpjmsos3m"]
+
+[ext_resource type="Script" uid="uid://bwjvwu3wleo1y" path="res://scenes/topdown/actors/components/model_rotation_component.gd" id="1_v0j33"]
+
+[node name="ModelRotationComponent" type="Node3D" unique_id=249749651]
+script = ExtResource("1_v0j33")

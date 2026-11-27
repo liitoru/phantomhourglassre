@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://bpor4ytyhw25k"]
+
+[ext_resource type="Script" uid="uid://dfidua75kiugq" path="res://scenes/topdown/actors/components/input_component.gd" id="1_x3vdm"]
+
+[node name="InputComponent" type="Node3D" unique_id=816170123]
+script = ExtResource("1_x3vdm")
+
+[node name="InteractTimer" type="Timer" parent="." unique_id=804575143]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="InteractTimer" to="." method="_on_interact_timer_timeout"]
